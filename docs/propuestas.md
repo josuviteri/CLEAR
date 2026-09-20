@@ -56,7 +56,7 @@ aprender aquí.
 | **Autores y año**          |  Jonathan Ho, Ajay Jain y Pieter Abbeel   (DDPM) + Robin Rombach, Andreas Blattmann, Dominik Lorenz y Bjorn Ommer (LDM)                                                                |
 | **Enlace**                 | https://arxiv.org/abs/2006.11239 (DDPMs) + https://arxiv.org/pdf/2112.10752 (LDM), https://arxiv.org/pdf/2207.12598 (CFG), https://arxiv.org/pdf/2112.10741 (GLIDE)                                        |
 | **Vía**                    | B                             |
-| **Por qué este y no otro** | _Nos interesa aprender sobre modelos de visión-lenguaje (VLMs) e IA generativa aplicada a la visión por computador, especialmente sobre modelos de difusión, como los Denoising Diffusion Probabilistic Models (DDPM), y su evolución hacia los Latent Diffusion Models (LDM). También nos interesa estudiar cómo la incorporación de embeddings textuales permite condicionar la generación de imágenes. Queremos darle un enfoque investigador y hacer trabajo interesante._ |
+| **Por qué este y no otro** | _Nos interesa aprender sobre modelos de visión-lenguaje (VLMs) e IA generativa aplicada a la visión por computador, especialmente sobre modelos de difusión, como los Denoising Diffusion Probabilistic Models (DDPM), y su evolución hacia los Latent Diffusion Models (LDM). También nos interesa estudiar cómo la incorporación de embeddings textuales permite condicionar la generación de imágenes. Queremos darle un enfoque investigador y hacer un trabajo interesante._ |
 
 ### Comprobación 1 · Datos
 
@@ -136,35 +136,35 @@ aprender aquí.
 
 |                            |                                                                     |
 | -------------------------- | ------------------------------------------------------------------- |
-| **Paper o referencia**     | _Título completo_                                                   |
-| **Autores y año**          |                                                                     |
-| **Enlace**                 | _arXiv, DOI o web del paper_                                        |
-| **Vía**                    | A (lista curada) / B (propuesta propia)                             |
-| **Por qué este y no otro** | _Dos líneas. Idealmente conectado con el rol profesional de arriba_ |
+| **Paper o referencia**     | _Modeling Polypharmacy Side Effects with Graph Convolutional Networks (Decagon)_ |
+| **Autores y año**          |  Marinka Zitnik, Monica Agrawal y Jure Leskovec, 2018 (Bioinformatics 34(13), ISMB 2018) |
+| **Enlace**                 | https://arxiv.org/abs/1802.00543                              |
+| **Vía**                    | B (propuesta propia)                                                |
+| **Por qué este y no otro** | _Predicción de enlaces en un grafo con 964 tipos, evaluación por clase muy desbalanceada y un modelo cuya inferencia se puede levantar con pocos recursos. Encaja con el rol de ML Engineering y Data Science. Trata un área diferente respecto a la propuesta 1 (GNN sobre datos biomédicos en lugar de generación de imagen), con un coste de cómputo menor._ |
 
 ### Comprobación 1 · Datos
 
-- [ ] Son **públicos y descargables hoy**. Enlace que funciona, no una promesa.
-- [ ] La licencia permite el uso académico.
+- [x] Son **públicos y descargables hoy**. Enlace que funciona, no una promesa.
+- [x] La licencia permite el uso académico.
 
 |                                       |                                                                |
 | ------------------------------------- | -------------------------------------------------------------- |
-| **Dataset**                           |                                                                |
-| **Enlace de descarga**                |                                                                |
-| **Tamaño**                            | _En MB/GB y en número de ejemplos_                             |
-| **Licencia**                          |                                                                |
-| **¿Hace falta registro o solicitud?** | _Si la respuesta es «hay que pedir acceso y tardan», es un no_ |
+| **Dataset**                           |  Decagon: `bio-decagon-ppi` (proteína-proteína), `bio-decagon-targets` y `-targets-all` (fármaco-proteína),  bio-decagon-combo` (efectos de polifarmacia, tripletas fármaco A – efecto – fármaco B), `bio-decagon-mono` (efectos de fármacos individuales) y `bio-decagon-effectcategories` |
+| **Enlace de descarga**                | https://www.kaggle.com/datasets/josuviteri/molecular-network-and-polypharmacy-data |
+| **Tamaño**                            | _645 fármacos, 19.085 proteínas, 715.612 aristas proteína-proteína, 18.596 fármaco-proteína y 4.651.131 aristas fármaco-fármaco, con 964 tipos de efecto. `45 MB` de almacenamiento.  |
+| **Licencia**                          | MIT  |
+| **¿Hace falta registro o solicitud?** | _Si, Kaggle_ |
 
 ### Comprobación 2 · Especificación
 
-- [ ] Hay implementación de referencia, **o bien** el paper especifica la arquitectura lo bastante como
+- [x] Hay implementación de referencia, **o bien** el paper especifica la arquitectura lo bastante como
       para implementarla sin adivinar.
 
 |                                                          |                                                                                                               |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| **¿Hay código de referencia?**                           | _Sí (enlace) / No_                                                                                            |
-| **Si no lo hay, ¿el paper da la arquitectura completa?** | _Capas, dimensiones, función de pérdida, optimizador_                                                         |
-| **Qué NO especifica el paper**                           | _Lo importante. Si la lista está vacía, no habéis leído el paper con suficiente atención: siempre falta algo_ |
+| **¿Hay código de referencia?**                           | _https://github.com/marinkaz/decagon_  |
+| **Si no lo hay, ¿el paper da la arquitectura completa?** | _El paper menciona un encoder GCN relacional, 2 capas con 64 y 32 unidades, dropout 0.1, decoder DEDICOM para pares fármaco-fármaco y bilineal para el resto, pérdida de crossed-entropy con muestreo negativo, Adam con learning rate 0.001, batch de 512, máximo 100 epochs y early stopping de 2._ |
+| **Qué NO especifica el paper**                           | _Features de entrada: cómo se codifican las proteínas ¿one-hot encoder? y su normalización. Activación de la última capa, dónde va el dropout y si hay weight decay. Las 4.651.131 aristas fármaco-fármaco coinciden con el total de 1.318 tipos, pero el modelo solo usa 964, hay que comprobarlo._ |
 
 ### Comprobación 3 · Cómputo · la regla 5/20
 
@@ -172,28 +172,28 @@ aprender aquí.
 
 |                                                |                                                                                                                   |
 | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Escala del paper original**                  | _Dataset completo, N épocas, qué hardware, cuánto tardó_                                                          |
-| **Escala que vais a hacer vosotros**           | _Subset de N, M épocas, modelo reducido a…_                                                                       |
-| **Tiempo estimado del entrenamiento completo** | _En minutos, en la máquina que vayáis a usar, y cómo lo habéis medido_                                            |
-| **Qué se pierde al recortar**                  | _La respuesta honesta. «La métrica bajará de 0.72 a algo en torno a 0.6» es una buena respuesta; «nada» no lo es_ |
-| **Hardware que vais a usar**                   | _Portátil / Colab gratuito / otro_                                                                                |
+| **Escala del paper original**                  | _Grafo completo (645 fármacos, 19.085 proteínas), 964 tipos de efecto, hasta 100 epochs con early stopping, batch 512, 2 capas (64 y 32). No se mencionan hardware ni tiempo, el paper solo dice que el modelo cabe en memoria de GPU y que la implementación es lineal en el número de aristas._  |
+| **Escala que vais a hacer vosotros**           | _El grafo es pequeño, así que lo que se recorta es el número de relaciones, que es lo que escala los parámetros. Primero todo el grafo de proteínas y fármacos, con un subconjunto de 50 tipos de efecto frecuentes, medios y raros, y el mismo split 80-10-10 por efecto. Después subir a 200, y si caben a los 964. Se puede probar el baseline sin encoder (DEDICOM/RESCAL) para comprobar la tesis del paper, que aporta el encoder._ |
+| **Tiempo estimado del entrenamiento completo** | _Fase 1 en 10 de minutos, Fase 2 en pocas horas._ |
+| **Qué se pierde al recortar**                  | Las métricas medias sobre 50 o 200 relaciones no son comparables con la Tabla 2 del paper (AUROC 0.872, AUPRC 0.832, AP@50 0.803), que tiene 964 de media. Con menos relaciones se reduce el reparto de parámetros, según el paper ayuda a los efectos raros. Esperemos quedar algo por debajo de las cifras del paper, pero no podemos garantizarlo._ |
+| **Hardware que vais a usar**                   | _Usaremos Google Colab (GPU T4) para la demo en forma de sanity check, con el objetivo de demostrar que los scripts de entrenamiento funcionan y GPUs locales para desarrollo, con el objetivo de extender el tiempo de entrenamiento, sin llegar a replicar el tiempo de cómputo original de los papers (NVIDIA RTX 3060 y 5070 12GB)_ |
 
 ### Comprobación 4 · Aplicativo
 
-- [ ] Hay una capa de servicio natural encima de la replicación.
+- [x] Hay una capa de servicio natural encima de la replicación.
 
 |                                |                                                                                   |
 | ------------------------------ | --------------------------------------------------------------------------------- |
-| **Qué construís encima**       | _Un buscador, un detector en vídeo, una API, un panel…_                           |
-| **Quién lo usaría y para qué** | _Una frase. Si no se os ocurre, el proyecto no cumple el objetivo del aplicativo_ |
-| **Qué necesita del modelo**    | _Entrada, salida, latencia aceptable_                                             |
+| **Qué construís encima**       | _Un test farmacéutico (API + interfaz web). Dada una lista de fármacos, puntuar todos los pares y devuelve los efectos secundarios más probables con su probabilidad. Sino, elegir un efecto y ver los pares más probables. Para explicar la predicción, muestra las dianas proteicas compartidas de cada par. Puede ser interesante un mapa de los efectos._ |
+| **Quién lo usaría y para qué** | _Estudiantes e investigadores de farmacéutica computacional que quieran priorizar qué combinaciones merecen un estudio._ |
+| **Qué necesita del modelo**    | _Entrada: 2 o más fármacos del vocabulario de 645. Salida: top-k efectos por par con probabilidad. Latencia: los embeddings de los 645 fármacos se calculan una vez y guardan. Puntuar un par contra los 964 efectos es un producto matricial pequeño, así que podría llevar menos de un segundo._ |
 
 ### Riesgo principal
 
 |                                                    |                                                                                              |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **Qué es lo que más probablemente va a salir mal** |                                                                                              |
-| **Qué haríais si pasa**                            | _Útil: «si no converge, reducimos a MNIST y lo declaramos». Inútil: «nada, está controlado»_ |
+| **Qué es lo que más probablemente va a salir mal** | _1. Coste: una matriz por cada una de las 964 relaciones puede disparar memoria y tiempo, sobre todo en la primera capa si las features de entrada son de alta dimensión._<br>_2. Métricas no comparables: por los huecos del paper (muestreo de negativos, AP@50), podemos obtener cifras distintas a las suyas sin que haya un problema de implementación. Además, hay riesgo de fuga si las features de fármacos individuales incluyen los efectos que se predicen._ |
+| **Qué haríais si pasa**                            | _1. Principalmente escalar por fases de 50, 200 y 964 relaciones, y parar donde quepa. Si aun así no cabe, compartir parámetros entre relaciones (descomposición en bases, estilo R-GCN) y documentarlo como desviación._<br>_2. Mismo número de negativos que positivos, mismo muestreo en validación y test, quitar de las features individuales los efectos a predecir, y comparar sobre todo contra nuestras propias baselines DEDICOM/RESCAL._ |
 
 ### Visto bueno del profesor (H2) · no rellenar
 
