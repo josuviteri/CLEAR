@@ -56,8 +56,11 @@ class Mnist(nn.Module):
     def forward(self, x):
         return self.network(x)
 
+
 def build_mnist(cfg: dict) -> nn.Module:
-    nombre = cfg["modelo"]["nombre"]
-    if nombre == "mnist":
-        return Mnist()
-    raise ValueError(f"modelo desconocido: {nombre}")
+    model_cfg = cfg["modelo"]
+
+    return Mnist(
+        hidden_layer_units=model_cfg.get("hidden_layers", [256, 128]),
+        output_size=model_cfg.get("output_size", 10),
+    )
