@@ -3,8 +3,8 @@ comparacion entre experimentos del proyecto carece de valor."""
 
 import torch
 
-from src.models.factory import construir_modelo
-from src.utils.seed import fijar_seed
+from src.models.factory_demo import construir_modelo
+from src.utils.seed_demo import fijar_seed
 
 CFG = {"modelo": {"nombre": "mi_modelo"}}
 

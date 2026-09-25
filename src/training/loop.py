@@ -2,63 +2,96 @@
 
 from __future__ import annotations
 
+import os
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from nn import functional as F
+import tqdm
 
-from src.utils.tracking import registrar
+import src.data.loaders as loaders
+
+from src.utils.tracking_demo import registrar
 
 OPTIMIZADORES = {
     "adam": torch.optim.Adam,
     "sgd": torch.optim.SGD,
     "rmsprop": torch.optim.RMSprop,
 }
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+MNIST = {
+    "epochs": 10,
+    "train_losses": [],
+    "train_accuracies": [],
+    "test_losses": [],
+    "test_accuracies": []
+}
+
+def train_mnist(model, train_loader, optimizer, device) -> nn.Module:
+    # Definimos la localización del dataaset
+    input_path = 'MNIST/raw/'
+    training_images_filepath = os.path.join(input_path, 'train-images-idx3-ubyte')
+    training_labels_filepath = os.path.join(input_path, 'train-labels-idx1-ubyte')
+    test_images_filepath = os.path.join(input_path, 't10k-images-idx3-ubyte')
+    test_labels_filepath = os.path.join(input_path, 't10k-labels-idx1-ubyte')
+    
+    mnist_dataloader = loaders.MnistDataloader(training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath)
+    mnist_dataloader.load_data()
+
+    mnist_train, mnist_test = mnist_dataloader.get_datasets() # van a ser nuestros datasets de entrenamiento y testing!
+    train_loader = DataLoader(mnist_train, batch_size=32)
+    test_loader = DataLoader(mnist_test, batch_size=32)
+
+    model.train()
+    correct = 0
+    total = 0
+    total_loss = 0 # acumulamos la pérdida/loss para la época/epoch
+    pbar = tqdm(train_loader, desc="Training")
+    for batch_idx, (data, target) in enumerate(pbar):
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        loss = F.cross_entropy(output, target)
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item() * data.size(0) # Acumulamos weighted loss
+
+        # Calculamos accuracy de entrenamiento
+        _, predicted = output.max(1)
+        correct += predicted.eq(target).sum().item()
+        total += target.size(0)
+
+        pbar.set_postfix(loss=f'{loss.item():.4f}')
+
+    avg_loss = total_loss / total # Calculamos loss medio para la época/epoch
+    acc = 100. * correct / total
+    print(f'Training Accuracy: {acc:.2f}%')
+    return avg_loss, acc
+
+def test_model(model, test_loader, device):
+    model.eval() # evaluamos el modelo
+    test_loss = 0
+    correct = 0
+    with torch.no_grad(): # no queremos realizar el descenso de gradientes/gradient descent durante la evaluación!
+        for idx, (data, target) in enumerate(test_loader):
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            test_loss += F.cross_entropy(output, target, reduction='sum').item() # obtenemos la perdida/loss de test
+            pred = output.argmax(dim=1, keepdim=True)
+            correct += pred.eq(target.view_as(pred)).sum().item()
+    test_loss /= len(test_loader.dataset) #normalizamos perdida/loss de test
+    acc = 100. * correct / len(test_loader.dataset)
+    print(f'\nTest set: Average loss: {test_loss:.4f}, Accuracy: {correct}/{len(test_loader.dataset)} ({acc:.0f}%)\n')
+    return test_loss, acc
 
 
-def entrenar(modelo: nn.Module, train_loader: DataLoader,
-             val_loader: DataLoader, cfg: dict, run=None) -> nn.Module:
-    tcfg = cfg["entrenamiento"]
-    opt = OPTIMIZADORES[tcfg["optimizador"]](modelo.parameters(),
-                                             lr=tcfg["learning_rate"])
-    criterio = nn.CrossEntropyLoss()
-    max_steps = tcfg.get("max_steps")
+def train_cifar_10():
+    return
 
-    paso = 0
-    for epoca in range(tcfg["epochs"]):
-        modelo.train()
-        for x, y in train_loader:
-            opt.zero_grad()
-            perdida = criterio(modelo(x), y)
-            perdida.backward()
-            opt.step()
+def test_mnist():
+    return
 
-            paso += 1
-            # .item() rompe el grafo: sin esto se acumula memoria hasta reventar
-            registrar(run, {"train/loss": perdida.item()}, paso)
-            if max_steps and paso >= max_steps:
-                return modelo
-
-        metricas = evaluar(modelo, val_loader, cfg)
-        registrar(run, {f"val/{k}": v for k, v in metricas.items()}, paso)
-        print(f"epoca {epoca + 1}/{tcfg['epochs']}  "
-              + "  ".join(f"{k}={v:.4f}" for k, v in metricas.items()))
-    return modelo
-
-
-@torch.no_grad()
-def evaluar(modelo: nn.Module, loader: DataLoader, cfg: dict) -> dict[str, float]:
-    """Evaluacion. El decorador no_grad no es opcional: sin el, la evaluacion
-    construye grafo y agota la memoria."""
-    modelo.eval()
-    criterio = nn.CrossEntropyLoss()
-    perdida_total, aciertos, total = 0.0, 0, 0
-
-    for x, y in loader:
-        logits = modelo(x)
-        perdida_total += criterio(logits, y).item() * y.size(0)
-        # dim=1 son las clases. dim=0 seria el batch: no da error y esta MAL.
-        aciertos += (logits.argmax(dim=1) == y).sum().item()
-        total += y.size(0)
-
-    return {"loss": perdida_total / max(total, 1),
-            "accuracy": aciertos / max(total, 1)}
+def test_cifar_10():
+    return

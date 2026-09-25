@@ -17,7 +17,7 @@ from pathlib import Path
 
 import torch
 
-from src.models.factory import construir_modelo
+from src.models.factory_demo import construir_modelo
 
 
 class Predictor:

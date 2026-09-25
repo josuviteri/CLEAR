@@ -16,7 +16,8 @@ from __future__ import annotations
 
 import hashlib
 import sys
-import urllib.request
+import tarfile
+import gdown
 from pathlib import Path
 
 DESTINO = Path("data")
@@ -25,6 +26,7 @@ DESTINO = Path("data")
 # `python scripts/get_data.py --hash`.
 FUENTES = [
     # ("https://.../train.tar.gz", "train.tar.gz", "sha256:abc123..."),
+    ("https://drive.google.com/file/d/13_45VYXcMfKuQfWDv0JfPMG09ByArjtC/view?usp=sharing", "train.tar.xz", "sha256:f00c71294e17335ab8d486594b0b16364e255e9f77fa5cab20b4fc5b4179645c")
 ]
 
 
@@ -39,11 +41,12 @@ def sha256(p: Path) -> str:
 def descargar(url: str, destino: Path) -> None:
     print(f"descargando {url} -> {destino}")
     destino.parent.mkdir(parents=True, exist_ok=True)
-    urllib.request.urlretrieve(url, destino)
+    gdown.download(url, str(destino), quiet=False)
 
 
 def main() -> int:
     solo_hash = "--hash" in sys.argv
+    unzip = "--unzip" in sys.argv
     if not FUENTES:
         print("No hay fuentes declaradas. Rellena FUENTES en este fichero.")
         print("Sin esto, nadie puede reproducir tu trabajo (hito H3).")
@@ -53,6 +56,14 @@ def main() -> int:
         ruta = DESTINO / nombre
         if not ruta.exists():
             descargar(url, ruta)
+
+        if unzip:
+            if nombre.endswith(".tar.xz"):
+                with tarfile.open(ruta, "r:*") as f:
+                    f.extractall(DESTINO)
+            else:
+                print(f"ERROR: no se sabe como descomprimir {nombre}")
+                return 1
 
         real = sha256(ruta)
         if solo_hash:

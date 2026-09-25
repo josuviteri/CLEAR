@@ -29,3 +29,35 @@ def construir_modelo(cfg: dict) -> nn.Module:
     if nombre == "mi_modelo":
         return ModeloPlaceholder()
     raise ValueError(f"modelo desconocido: {nombre}")
+
+
+class Mnist(nn.Module):
+    def __init__(
+        self,
+        hidden_layer_units: list[int] | None = None,
+        output_size: int = 10,
+    ):
+        super().__init__()
+
+        hidden_layer_units = hidden_layer_units or []
+        layers = [nn.Flatten()]
+        input_size = 28 * 28
+
+        for units in hidden_layer_units:
+            layers.extend([
+                nn.Linear(input_size, units),
+                nn.ReLU(),
+            ])
+            input_size = units
+
+        layers.append(nn.Linear(input_size, output_size))
+        self.network = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.network(x)
+
+def build_mnist(cfg: dict) -> nn.Module:
+    nombre = cfg["modelo"]["nombre"]
+    if nombre == "mnist":
+        return Mnist()
+    raise ValueError(f"modelo desconocido: {nombre}")
