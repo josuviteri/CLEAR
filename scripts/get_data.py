@@ -18,6 +18,7 @@ import hashlib
 import sys
 import tarfile
 import gdown
+import py7zr
 from pathlib import Path
 
 DESTINO = Path("data")
@@ -43,6 +44,24 @@ def descargar(url: str, destino: Path) -> None:
     destino.parent.mkdir(parents=True, exist_ok=True)
     gdown.download(url, str(destino), quiet=False)
 
+def unzip_file(nombre: str) -> None:
+    if nombre.endswith(".tar.xz"):
+        with tarfile.open(DESTINO / nombre, "r:*") as f:
+            f.extractall(DESTINO)
+        print(f"descompresion terminada: {nombre}")
+
+        carpeta_cifar = DESTINO / "data" / "cifar-10"
+        archivos_7z = sorted(carpeta_cifar.glob("*.7z"))
+        for archivo_7z in archivos_7z:
+            with py7zr.SevenZipFile(archivo_7z, mode="r") as archivo:
+                archivo.extractall(path=carpeta_cifar)
+            print(f"descompresion terminada: {archivo_7z.name}")
+
+        if not archivos_7z:
+            print(f"No hay archivos .7z en {carpeta_cifar}")
+    else:
+        print(f"ERROR: no se ha descomprimido {nombre}")
+
 
 def main() -> int:
     solo_hash = "--hash" in sys.argv
@@ -58,12 +77,7 @@ def main() -> int:
             descargar(url, ruta)
 
         if unzip:
-            if nombre.endswith(".tar.xz"):
-                with tarfile.open(ruta, "r:*") as f:
-                    f.extractall(DESTINO)
-            else:
-                print(f"ERROR: no se sabe como descomprimir {nombre}")
-                return 1
+            unzip_file(nombre)
 
         real = sha256(ruta)
         if solo_hash:

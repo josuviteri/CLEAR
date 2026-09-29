@@ -1,14 +1,15 @@
 # CLEAR
 ### _Probabilistic Reverse-diffusion for Image Synthesis with Multimodal guidance_
-_Research project based on DDPM, CFG and LDM papers._
+_Research project based on DDPM and CFG papers._
 
-Replicación de **<Autores, año · Título del paper>** sobre **<dataset>**,
-con <aplicativo: buscador semántico / detector en vídeo / lo que sea> construido encima.
+Replication  of **Jonathan Ho, Ajay Jain y Pieter Abbeel, 2020 ·  DDPM**, **Jonathan Ho & Tim Salimans**, 2022 · (CFG)**, sobre **MNIST** and **CIFAR-10**,   
+with a web UI for experimental guided generation on top.
 
-- **Paper:** <enlace a arXiv o DOI>
-- **Implementación de referencia:** <enlace, o «ninguna: el paper se implementa desde cero»>
-- **Seguimiento de experimentos:** <enlace al proyecto de W&B — obligatorio>
-- **Autoría:** <Nombre 1>, <Nombre 2>
+- **DDPM Paper:** <https://arxiv.org/pdf/2006.11239>
+- **CFG Paper:** <https://arxiv.org/pdf/2207.12598>
+- **Reference of DDPM Implementation:** (https://github.com/hojonathanho/diffusion)
+- **Experiment Tracking:** <enlace al proyecto de W&B — obligatorio>
+- **Authory:** Josu Viteri, Gotzon Viteri
 
 ## Resultado
 
